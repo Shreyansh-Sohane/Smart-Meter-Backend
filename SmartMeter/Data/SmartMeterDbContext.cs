@@ -159,7 +159,7 @@ public partial class SmartMeterDbContext : DbContext
             entity.Property(e => e.Aid).HasColumnName("aid");
             entity.Property(e => e.Createdat)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnType("timestamp with time zone")
                 .HasColumnName("createdat");
             entity.Property(e => e.Createdby)
                 .HasMaxLength(100)
@@ -184,7 +184,7 @@ public partial class SmartMeterDbContext : DbContext
                 .HasColumnName("status");
             entity.Property(e => e.Tariffid).HasColumnName("tariffid");
             entity.Property(e => e.Updatedat)
-                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnType("timestamp with time zone")
                 .HasColumnName("updatedat");
             entity.Property(e => e.Updatedby)
                 .HasMaxLength(100)
@@ -228,7 +228,7 @@ public partial class SmartMeterDbContext : DbContext
                 .HasMaxLength(30)
                 .HasColumnName("imsi");
             entity.Property(e => e.Installtsutc)
-                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnType("timestamp with time zone")
                 .HasColumnName("installtsutc");
             entity.Property(e => e.Ipaddress)
                 .HasMaxLength(45)
@@ -422,7 +422,7 @@ public partial class SmartMeterDbContext : DbContext
                 .HasDefaultValue(true)
                 .HasColumnName("isactive");
             entity.Property(e => e.Lastloginutc)
-                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnType("timestamp without time zone")
                 .HasColumnName("lastloginutc");
             entity.Property(e => e.Passwordhash).HasColumnName("passwordhash");
             entity.Property(e => e.Phone)

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartMeter.Data;
@@ -11,9 +12,11 @@ using SmartMeter.Data;
 namespace SmartMeter.Migrations
 {
     [DbContext(typeof(SmartMeterDbContext))]
-    partial class SmartMeterDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251028163345_ConsumerPhoto")]
+    partial class ConsumerPhoto
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -211,7 +214,7 @@ namespace SmartMeter.Migrations
 
                     b.Property<DateTime>("Createdat")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp(3) without time zone")
                         .HasColumnName("createdat")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
@@ -277,7 +280,7 @@ namespace SmartMeter.Migrations
                         .HasColumnName("tariffid");
 
                     b.Property<DateTime?>("Updatedat")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp(3) without time zone")
                         .HasColumnName("updatedat");
 
                     b.Property<string>("Updatedby")
@@ -332,7 +335,7 @@ namespace SmartMeter.Migrations
                         .HasColumnName("imsi");
 
                     b.Property<DateTime>("Installtsutc")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp(3) without time zone")
                         .HasColumnName("installtsutc");
 
                     b.Property<string>("Ipaddress")
@@ -632,7 +635,7 @@ namespace SmartMeter.Migrations
                         .HasColumnName("isactive");
 
                     b.Property<DateTime?>("Lastloginutc")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp(3) without time zone")
                         .HasColumnName("lastloginutc");
 
                     b.Property<byte[]>("Passwordhash")

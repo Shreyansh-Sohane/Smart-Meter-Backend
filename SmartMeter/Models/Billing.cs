@@ -23,15 +23,15 @@ public partial class Billing
 
     public decimal? Totalamount { get; set; }
 
-    public DateTime Generatedat { get; set; }
+    public DateTime Generatedat { get; set; } = DateTime.UtcNow;
 
     public DateOnly Duedate { get; set; }
 
-    public DateTime? Paiddate { get; set; }
+    public DateTime? Paiddate { get; set; } = DateTime.UtcNow;
 
     public string Paymentstatus { get; set; } = null!;
 
-    public DateTime? Disconnectiondate { get; set; }
+    public DateTime? Disconnectiondate { get; set; } = DateTime.UtcNow;
 
     public virtual ICollection<Arrear> Arrears { get; set; } = new List<Arrear>();
 

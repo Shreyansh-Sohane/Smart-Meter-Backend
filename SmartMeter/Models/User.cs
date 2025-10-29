@@ -19,12 +19,12 @@ public partial class User
 
     public string? Phone { get; set; }
 
-    public DateTime? Lastloginutc { get; set; }
+    public DateTime? Lastloginutc { get; set; } = DateTime.UtcNow;
 
     public bool Isactive { get; set; }
     public string Roles { get; set; } = string.Empty;
     public string RefreshToken { get; set; } = string.Empty;
-    public DateTime RefreshTokenExpiry { get; set; }
+    public DateTime RefreshTokenExpiry { get; set; } = DateTime.UtcNow;
 
 
 

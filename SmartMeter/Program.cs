@@ -1,11 +1,12 @@
 
-using AuthWebAPIDemo.Services;
+using SmartMeter.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SmartMeter.Data;
-using SmartMeter.Services;
 using System.Text;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.OpenApi.Models;
 
 namespace SmartMeter
 {
@@ -27,6 +28,18 @@ namespace SmartMeter
 
             builder.Services.AddScoped<IAuthService, AuthService>();
 
+            // Add these services
+            builder.Services.AddScoped<IConsumerPhotoService, ConsumerPhotoService>();
+
+            // Configure file upload limits
+            builder.Services.Configure<IISServerOptions>(options =>
+            {
+                options.MaxRequestBodySize = 10 * 1024 * 1024; // 10MB
+            });
+
+           
+
+
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
             {
@@ -39,6 +52,32 @@ namespace SmartMeter
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AppSettings:Token"]!))
 
             });
+
+
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please insert JWT with Bearer into field",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT"
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+     {
+         new OpenApiSecurityScheme {
+             Reference = new OpenApiReference {
+                 Type = ReferenceType.SecurityScheme,
+                 Id = "Bearer"
+             }
+         },
+         new string[] { }
+}});
+            });
+
 
             builder.Services.AddAuthorization();
 
@@ -57,7 +96,16 @@ namespace SmartMeter
 
             app.UseAuthorization();
 
+            // Add static files middleware
+            app.UseStaticFiles();
 
+            // Serve consumer uploads
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(builder.Environment.WebRootPath, "uploads", "consumers")),
+                RequestPath = "/uploads/consumers"
+            });
 
             app.MapControllers();
 
