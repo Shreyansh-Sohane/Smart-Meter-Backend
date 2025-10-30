@@ -11,9 +11,10 @@ public partial class Billing
 
     public string Meterid { get; set; } = null!;
 
-    public DateOnly Billingperiodstart { get; set; }
+   // public DateOnly Billingperiodstart { get; set; }
+    public DateTime Billingperiodstart { get; set; } = DateTime.UtcNow;
 
-    public DateOnly Billingperiodend { get; set; }
+    public DateTime Billingperiodend { get; set; } = DateTime.UtcNow;
 
     public decimal Totalunitsconsumed { get; set; }
 
@@ -25,7 +26,8 @@ public partial class Billing
 
     public DateTime Generatedat { get; set; } = DateTime.UtcNow;
 
-    public DateOnly Duedate { get; set; }
+   // public DateOnly Duedate { get; set; } 
+    public DateTime Duedate { get; set; } = DateTime.UtcNow;
 
     public DateTime? Paiddate { get; set; } = DateTime.UtcNow;
 

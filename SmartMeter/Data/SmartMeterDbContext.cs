@@ -108,23 +108,23 @@ public partial class SmartMeterDbContext : DbContext
             entity.Property(e => e.Baseamount)
                 .HasPrecision(18, 4)
                 .HasColumnName("baseamount");
-            entity.Property(e => e.Billingperiodend).HasColumnName("billingperiodend");
-            entity.Property(e => e.Billingperiodstart).HasColumnName("billingperiodstart");
+            entity.Property(e => e.Billingperiodend).HasColumnName("billingperiodend").HasColumnType("timestamp with time zone");
+            entity.Property(e => e.Billingperiodstart).HasColumnName("billingperiodstart").HasColumnType("timestamp with time zone");
             entity.Property(e => e.Consumerid).HasColumnName("consumerid");
             entity.Property(e => e.Disconnectiondate)
                 .HasPrecision(3)
-                .HasColumnName("disconnectiondate");
-            entity.Property(e => e.Duedate).HasColumnName("duedate");
+                .HasColumnName("disconnectiondate").HasColumnType("timestamp with time zone");
+            entity.Property(e => e.Duedate).HasColumnName("duedate").HasColumnType("timestamp with time zone");
             entity.Property(e => e.Generatedat)
                 .HasPrecision(3)
                 .HasDefaultValueSql("now()")
-                .HasColumnName("generatedat");
+                .HasColumnName("generatedat").HasColumnType("timestamp with time zone");
             entity.Property(e => e.Meterid)
                 .HasMaxLength(50)
                 .HasColumnName("meterid");
             entity.Property(e => e.Paiddate)
                 .HasPrecision(3)
-                .HasColumnName("paiddate");
+                .HasColumnName("paiddate").HasColumnType("timestamp with time zone");
             entity.Property(e => e.Paymentstatus)
                 .HasMaxLength(20)
                 .HasDefaultValueSql("'Unpaid'::character varying")
@@ -182,6 +182,10 @@ public partial class SmartMeterDbContext : DbContext
                 .HasMaxLength(20)
                 .HasDefaultValueSql("'Active'::character varying")
                 .HasColumnName("status");
+            entity.Property(e => e.Createdat)
+        .HasDefaultValueSql("CURRENT_TIMESTAMP")
+        .HasColumnType("timestamp with time zone")
+        .HasColumnName("createdat");
             entity.Property(e => e.Tariffid).HasColumnName("tariffid");
             entity.Property(e => e.Updatedat)
                 .HasColumnType("timestamp with time zone")
@@ -422,7 +426,7 @@ public partial class SmartMeterDbContext : DbContext
                 .HasDefaultValue(true)
                 .HasColumnName("isactive");
             entity.Property(e => e.Lastloginutc)
-                .HasColumnType("timestamp without time zone")
+                .HasColumnType("timestamp with time zone")
                 .HasColumnName("lastloginutc");
             entity.Property(e => e.Passwordhash).HasColumnName("passwordhash");
             entity.Property(e => e.Phone)

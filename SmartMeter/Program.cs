@@ -30,6 +30,7 @@ namespace SmartMeter
 
             // Add these services
             builder.Services.AddScoped<IConsumerPhotoService, ConsumerPhotoService>();
+            builder.Services.AddScoped<IBillService, BillService>();
 
             // Configure file upload limits
             builder.Services.Configure<IISServerOptions>(options =>

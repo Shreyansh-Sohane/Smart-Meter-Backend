@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartMeter.Data;
@@ -11,9 +12,11 @@ using SmartMeter.Data;
 namespace SmartMeter.Migrations
 {
     [DbContext(typeof(SmartMeterDbContext))]
-    partial class SmartMeterDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251030085918_ChangedDateonlyToDateTime")]
+    partial class ChangedDateonlyToDateTime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -136,7 +139,7 @@ namespace SmartMeter.Migrations
 
                     b.Property<DateTime?>("Disconnectiondate")
                         .HasPrecision(3)
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("disconnectiondate");
 
                     b.Property<DateTime>("Duedate")
@@ -146,7 +149,7 @@ namespace SmartMeter.Migrations
                     b.Property<DateTime>("Generatedat")
                         .ValueGeneratedOnAdd()
                         .HasPrecision(3)
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("generatedat")
                         .HasDefaultValueSql("now()");
 
@@ -158,7 +161,7 @@ namespace SmartMeter.Migrations
 
                     b.Property<DateTime?>("Paiddate")
                         .HasPrecision(3)
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("paiddate");
 
                     b.Property<string>("Paymentstatus")
