@@ -17,5 +17,6 @@ namespace SmartMeter.Services
         Task<TokenResponseDto?> RefreshTokenAsync(RefreshTokenRequestDto request);
 
         Task<User?> RegisterAsync(UserDto request);
+        Task<bool> ChangePasswordAsync(long userId, ChangePasswordDto request);
     }
 }

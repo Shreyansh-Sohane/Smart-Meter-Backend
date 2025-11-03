@@ -21,11 +21,11 @@ public partial class Consumer
 
     public string Status { get; set; } = null!;
 
-    public DateTime Createdat { get; set; }
+    public DateTime Createdat { get; set; } = DateTime.UtcNow;
 
     public string Createdby { get; set; } = null!;
 
-    public DateTime? Updatedat { get; set; }
+    public DateTime? Updatedat { get; set; } = DateTime.UtcNow;
 
     public string? Updatedby { get; set; }
 
@@ -42,4 +42,13 @@ public partial class Consumer
     public virtual Orgunit Orgunit { get; set; } = null!;
 
     public virtual Tariff Tariff { get; set; } = null!;
+
+
+    // Add these for photo upload
+    public string? ProfilePhotoPath { get; set; }
+    public string? ProfilePhotoUrl { get; set; }
+    public long? ProfilePhotoSize { get; set; }
+    public string? ProfilePhotoContentType { get; set; }
+    public DateTime? ProfilePhotoUpdatedAt { get; set; } = DateTime.UtcNow;
+
 }

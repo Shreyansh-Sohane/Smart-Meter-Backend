@@ -9,7 +9,7 @@ public partial class Meterreading
 
     public string Meterid { get; set; } = null!;
 
-    public DateTime Meterreadingdate { get; set; }
+    public DateTime Meterreadingdate { get; set; } = DateTime.UtcNow;
 
     public decimal? Energyconsumed { get; set; }
 

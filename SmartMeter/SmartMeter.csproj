@@ -28,6 +28,7 @@
     <Folder Include="Configs\" />
     <Folder Include="Middlewares\" />
     <Folder Include="Repositories\" />
+    <Folder Include="wwwroot\uploads\consumers\" />
   </ItemGroup>
 
 </Project>

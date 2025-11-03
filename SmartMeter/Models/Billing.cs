@@ -11,9 +11,10 @@ public partial class Billing
 
     public string Meterid { get; set; } = null!;
 
-    public DateOnly Billingperiodstart { get; set; }
+   // public DateOnly Billingperiodstart { get; set; }
+    public DateTime Billingperiodstart { get; set; } = DateTime.UtcNow;
 
-    public DateOnly Billingperiodend { get; set; }
+    public DateTime Billingperiodend { get; set; } = DateTime.UtcNow;
 
     public decimal Totalunitsconsumed { get; set; }
 
@@ -23,15 +24,16 @@ public partial class Billing
 
     public decimal? Totalamount { get; set; }
 
-    public DateTime Generatedat { get; set; }
+    public DateTime Generatedat { get; set; } = DateTime.UtcNow;
 
-    public DateOnly Duedate { get; set; }
+   // public DateOnly Duedate { get; set; } 
+    public DateTime Duedate { get; set; } = DateTime.UtcNow;
 
-    public DateTime? Paiddate { get; set; }
+    public DateTime? Paiddate { get; set; } = DateTime.UtcNow;
 
     public string Paymentstatus { get; set; } = null!;
 
-    public DateTime? Disconnectiondate { get; set; }
+    public DateTime? Disconnectiondate { get; set; } = DateTime.UtcNow;
 
     public virtual ICollection<Arrear> Arrears { get; set; } = new List<Arrear>();
 

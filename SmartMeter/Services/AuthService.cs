@@ -12,7 +12,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 
-namespace AuthWebAPIDemo.Services
+ namespace SmartMeter.Services
 {
     public class AuthService : IAuthService
     {
@@ -133,6 +133,44 @@ namespace AuthWebAPIDemo.Services
             };
 
             return token;
+        }
+
+
+        public async Task<bool> ChangePasswordAsync(long userId, ChangePasswordDto request)
+        {
+            // Validate new password confirmation
+            if (request.NewPassword != request.ConfirmNewPassword)
+            {
+                return false;
+            }
+
+            // Find user
+            var user = await _context.Users.FindAsync(userId);
+            if (user is null)
+            {
+                return false;
+            }
+
+            // Verify current password
+            var storedHashedPassword = Encoding.UTF8.GetString(user.Passwordhash);
+            var currentPasswordVerification = _passwordHasher.VerifyHashedPassword(user, storedHashedPassword, request.CurrentPassword);
+
+            if (currentPasswordVerification == PasswordVerificationResult.Failed)
+            {
+                return false;
+            }
+
+            // Hash new password
+            var newHashedPassword = _passwordHasher.HashPassword(user, request.NewPassword);
+            user.Passwordhash = Encoding.UTF8.GetBytes(newHashedPassword);
+
+            // Invalidate all refresh tokens (optional security measure)
+            //user.RefreshToken = null;
+            //user.RefreshTokenExpiry = null;
+
+            // Save changes
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

@@ -19,7 +19,7 @@ public partial class Meter
 
     public string Category { get; set; } = null!;
 
-    public DateTime Installtsutc { get; set; }
+    public DateTime Installtsutc { get; set; } = DateTime.UtcNow;
 
     public string Status { get; set; } = null!;
 
