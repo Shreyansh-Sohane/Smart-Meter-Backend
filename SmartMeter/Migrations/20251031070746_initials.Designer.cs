@@ -12,27 +12,27 @@ using SmartMeter.Data;
 namespace SmartMeter.Migrations
 {
     [DbContext(typeof(SmartMeterDbContext))]
-    [Migration("20251027112724_initial")]
-    partial class initial
+    [Migration("20251031070746_initials")]
+    partial class initials
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.10")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("SmartMeter.Models.Address", b =>
                 {
-                    b.Property<long>("Aid")
+                    b.Property<long>("Addressid")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("aid");
+                        .HasColumnName("addressid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Aid"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Addressid"));
 
                     b.Property<string>("City")
                         .IsRequired()
@@ -58,13 +58,13 @@ namespace SmartMeter.Migrations
                         .HasColumnType("character varying(20)")
                         .HasColumnName("pincode");
 
-                    b.Property<string>("State")
+                    b.Property<string>("States")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
-                        .HasColumnName("state");
+                        .HasColumnName("states");
 
-                    b.HasKey("Aid")
+                    b.HasKey("Addressid")
                         .HasName("address_pkey");
 
                     b.ToTable("address", (string)null);
@@ -208,13 +208,13 @@ namespace SmartMeter.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Consumerid"));
 
-                    b.Property<long?>("Aid")
+                    b.Property<long?>("Addressid")
                         .HasColumnType("bigint")
-                        .HasColumnName("aid");
+                        .HasColumnName("addressid");
 
                     b.Property<DateTime>("Createdat")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp(3) without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("createdat")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
@@ -233,12 +233,12 @@ namespace SmartMeter.Migrations
                         .HasColumnName("deleted");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)")
                         .HasColumnName("email");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)")
                         .HasColumnName("name");
@@ -246,6 +246,13 @@ namespace SmartMeter.Migrations
                     b.Property<int>("Orgunitid")
                         .HasColumnType("integer")
                         .HasColumnName("orgunitid");
+
+                    b.Property<byte[]>("Passwordhash")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bytea")
+                        .HasColumnName("passwordhash")
+                        .HasDefaultValueSql("'\\x3635366665626565'::bytea");
 
                     b.Property<string>("Phone")
                         .HasMaxLength(30)
@@ -265,7 +272,7 @@ namespace SmartMeter.Migrations
                         .HasColumnName("tariffid");
 
                     b.Property<DateTime?>("Updatedat")
-                        .HasColumnType("timestamp(3) without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updatedat");
 
                     b.Property<string>("Updatedby")
@@ -273,14 +280,22 @@ namespace SmartMeter.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("updatedby");
 
+                    b.Property<string>("Username")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("username");
+
                     b.HasKey("Consumerid")
                         .HasName("consumer_pkey");
 
-                    b.HasIndex("Aid");
+                    b.HasIndex("Addressid");
 
                     b.HasIndex("Orgunitid");
 
                     b.HasIndex("Tariffid");
+
+                    b.HasIndex(new[] { "Email" }, "consumer_email_key")
+                        .IsUnique();
 
                     b.ToTable("consumer", (string)null);
                 });
@@ -320,7 +335,7 @@ namespace SmartMeter.Migrations
                         .HasColumnName("imsi");
 
                     b.Property<DateTime>("Installtsutc")
-                        .HasColumnType("timestamp(3) without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("installtsutc");
 
                     b.Property<string>("Ipaddress")
@@ -609,6 +624,7 @@ namespace SmartMeter.Migrations
                         .HasColumnName("displayname");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)")
                         .HasColumnName("email");
@@ -620,7 +636,7 @@ namespace SmartMeter.Migrations
                         .HasColumnName("isactive");
 
                     b.Property<DateTime?>("Lastloginutc")
-                        .HasColumnType("timestamp(3) without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("lastloginutc");
 
                     b.Property<byte[]>("Passwordhash")
@@ -633,6 +649,15 @@ namespace SmartMeter.Migrations
                         .HasColumnType("character varying(30)")
                         .HasColumnName("phone");
 
+                    b.Property<string>("Profilepic")
+                        .HasColumnType("text")
+                        .HasColumnName("profilepic");
+
+                    b.Property<string>("Roles")
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
+                        .HasColumnName("roles");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -641,6 +666,9 @@ namespace SmartMeter.Migrations
 
                     b.HasKey("Userid")
                         .HasName("User_pkey");
+
+                    b.HasIndex(new[] { "Email" }, "User_email_key")
+                        .IsUnique();
 
                     b.HasIndex(new[] { "Username" }, "User_username_key")
                         .IsUnique();
@@ -690,10 +718,10 @@ namespace SmartMeter.Migrations
 
             modelBuilder.Entity("SmartMeter.Models.Consumer", b =>
                 {
-                    b.HasOne("SmartMeter.Models.Address", "AidNavigation")
+                    b.HasOne("SmartMeter.Models.Address", "Address")
                         .WithMany("Consumers")
-                        .HasForeignKey("Aid")
-                        .HasConstraintName("consumer_aid_fkey");
+                        .HasForeignKey("Addressid")
+                        .HasConstraintName("consumer_addressid_fkey");
 
                     b.HasOne("SmartMeter.Models.Orgunit", "Orgunit")
                         .WithMany("Consumers")
@@ -707,7 +735,7 @@ namespace SmartMeter.Migrations
                         .IsRequired()
                         .HasConstraintName("consumer_tariffid_fkey");
 
-                    b.Navigation("AidNavigation");
+                    b.Navigation("Address");
 
                     b.Navigation("Orgunit");
 

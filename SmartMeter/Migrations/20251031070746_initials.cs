@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SmartMeter.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class initials : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,17 +16,17 @@ namespace SmartMeter.Migrations
                 name: "address",
                 columns: table => new
                 {
-                    aid = table.Column<long>(type: "bigint", nullable: false)
+                    addressid = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     houseno = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     lanelocality = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     city = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    state = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    states = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     pincode = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("address_pkey", x => x.aid);
+                    table.PrimaryKey("address_pkey", x => x.addressid);
                 });
 
             migrationBuilder.CreateTable(
@@ -75,9 +75,11 @@ namespace SmartMeter.Migrations
                     username = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     passwordhash = table.Column<byte[]>(type: "bytea", nullable: false),
                     displayname = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    email = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    profilepic = table.Column<string>(type: "text", nullable: true),
+                    email = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     phone = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: true),
-                    lastloginutc = table.Column<DateTime>(type: "timestamp(3) without time zone", nullable: true),
+                    roles = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: true),
+                    lastloginutc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     isactive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true)
                 },
                 constraints: table =>
@@ -91,27 +93,29 @@ namespace SmartMeter.Migrations
                 {
                     consumerid = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    aid = table.Column<long>(type: "bigint", nullable: true),
+                    username = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    addressid = table.Column<long>(type: "bigint", nullable: true),
                     phone = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: true),
-                    email = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    email = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     orgunitid = table.Column<int>(type: "integer", nullable: false),
                     tariffid = table.Column<int>(type: "integer", nullable: false),
                     status = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false, defaultValueSql: "'Active'::character varying"),
-                    createdat = table.Column<DateTime>(type: "timestamp(3) without time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    createdat = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     createdby = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false, defaultValueSql: "'system'::character varying"),
-                    updatedat = table.Column<DateTime>(type: "timestamp(3) without time zone", nullable: true),
+                    updatedat = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     updatedby = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    deleted = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
+                    deleted = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    passwordhash = table.Column<byte[]>(type: "bytea", nullable: false, defaultValueSql: "'\\x3635366665626565'::bytea")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("consumer_pkey", x => x.consumerid);
                     table.ForeignKey(
-                        name: "consumer_aid_fkey",
-                        column: x => x.aid,
+                        name: "consumer_addressid_fkey",
+                        column: x => x.addressid,
                         principalTable: "address",
-                        principalColumn: "aid");
+                        principalColumn: "addressid");
                     table.ForeignKey(
                         name: "consumer_orgunitid_fkey",
                         column: x => x.orgunitid,
@@ -180,7 +184,7 @@ namespace SmartMeter.Migrations
                     manufacturer = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     firmware = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     category = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    installtsutc = table.Column<DateTime>(type: "timestamp(3) without time zone", nullable: false),
+                    installtsutc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     status = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false, defaultValueSql: "'Active'::character varying"),
                     consumerid = table.Column<long>(type: "bigint", nullable: true)
                 },
@@ -330,9 +334,15 @@ namespace SmartMeter.Migrations
                 column: "meterid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_consumer_aid",
+                name: "consumer_email_key",
                 table: "consumer",
-                column: "aid");
+                column: "email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_consumer_addressid",
+                table: "consumer",
+                column: "addressid");
 
             migrationBuilder.CreateIndex(
                 name: "IX_consumer_orgunitid",
@@ -393,6 +403,12 @@ namespace SmartMeter.Migrations
                 name: "IX_todrule_tariffid",
                 table: "todrule",
                 column: "tariffid");
+
+            migrationBuilder.CreateIndex(
+                name: "User_email_key",
+                table: "User",
+                column: "email",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "User_username_key",

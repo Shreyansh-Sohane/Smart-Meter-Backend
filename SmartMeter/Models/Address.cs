@@ -5,7 +5,7 @@ namespace SmartMeter.Models;
 
 public partial class Address
 {
-    public long Aid { get; set; }
+    public long Addressid { get; set; }
 
     public string Houseno { get; set; } = null!;
 
@@ -13,7 +13,7 @@ public partial class Address
 
     public string City { get; set; } = null!;
 
-    public string State { get; set; } = null!;
+    public string States { get; set; } = null!;
 
     public string Pincode { get; set; } = null!;
 

@@ -12,7 +12,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 
-namespace AuthWebAPIDemo.Services
+namespace SmartMeter.Services
 {
     public class AuthService : IAuthService
     {
@@ -34,9 +34,11 @@ namespace AuthWebAPIDemo.Services
 
             var user = new User
             {
+                Email = request.Email,
                 Username = request.Username,
                 Displayname = request.Username, // Set display name
-                Isactive = true
+                Isactive = true,
+                Profilepic = null
             };
 
             // Hash password and convert to byte[]
@@ -53,7 +55,6 @@ namespace AuthWebAPIDemo.Services
             User? user = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
             if (user is null)
                 return null;
-
             // Convert byte[] back to string for verification
             var storedHashedPassword = Encoding.UTF8.GetString(user.Passwordhash);
             var verificationResult = _passwordHasher.VerifyHashedPassword(user, storedHashedPassword, request.Password);
@@ -66,7 +67,7 @@ namespace AuthWebAPIDemo.Services
             var token = new TokenResponseDto
             {
                 AccessToken = CreateToken(user),
-                RefreshToken = await GenerateAndSaveRefreshToken(user)
+                //RefreshToken = await GenerateAndSaveRefreshToken(user)
             };
 
             return token;
@@ -80,8 +81,8 @@ namespace AuthWebAPIDemo.Services
             var refreshToken = Convert.ToBase64String(randomNumber);
 
             // Make sure your User entity has these properties
-            user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(1);
+            //user.RefreshToken = refreshToken;
+            //user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(1);
 
             await _context.SaveChangesAsync();
             return refreshToken;
@@ -120,19 +121,19 @@ namespace AuthWebAPIDemo.Services
             return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
         }
 
-        public async Task<TokenResponseDto?> RefreshTokenAsync(RefreshTokenRequestDto request)
-        {
-            var user = await _context.Users.FindAsync(request.UserId);
-            if (user is null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiry < DateTime.UtcNow)
-                return null;
+        //public async Task<TokenResponseDto?> RefreshTokenAsync(RefreshTokenRequestDto request)
+        //{
+        //    var user = await _context.Users.FindAsync(request.UserId);
+        //    if (user is null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiry < DateTime.UtcNow)
+        //        return null;
 
-            var token = new TokenResponseDto
-            {
-                AccessToken = CreateToken(user),
-                RefreshToken = await GenerateAndSaveRefreshToken(user)
-            };
+        //    var token = new TokenResponseDto
+        //    {
+        //        AccessToken = CreateToken(user),
+        //        RefreshToken = await GenerateAndSaveRefreshToken(user)
+        //    };
 
-            return token;
-        }
-    }
+        //    return token;
+        //}
+}
 }

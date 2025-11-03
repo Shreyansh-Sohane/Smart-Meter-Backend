@@ -1,11 +1,13 @@
-
-using AuthWebAPIDemo.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using SmartMeter.Data;
+using SmartMeter.Services.TariffServices;
+using SmartMeter.Services.UserServices;
 using SmartMeter.Services;
 using System.Text;
+using SmartMeter.Data;
+using SmartMeter.Services.TodRuleServices;
+using SmartMeter.Services.TariffSlabServices;
 
 namespace SmartMeter
 {
@@ -16,16 +18,30 @@ namespace SmartMeter
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            
+
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            // json to date converter
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new SmartMeter.Helpers.DateOnlyJsonConverter());
+            });
+
+
             builder.Services.AddDbContext<SmartMeterDbContext>(options =>
             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<ITariffServices, TariffServices>();
+            builder.Services.AddScoped<IUserServices, UserServices>();
+            builder.Services.AddScoped<ITodRuleServices, TodRuleServices>();
+            builder.Services.AddScoped<ITariffSlabServices, TariffSlabServices>();
+            //builder.Services.AddScoped<IConsumptionService, ConsumptionService>();
+
+
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
@@ -53,7 +69,7 @@ namespace SmartMeter
 
             app.UseHttpsRedirection();
 
-           app.UseAuthentication();
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

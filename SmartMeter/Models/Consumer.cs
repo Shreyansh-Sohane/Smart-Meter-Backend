@@ -7,13 +7,15 @@ public partial class Consumer
 {
     public long Consumerid { get; set; }
 
-    public string Name { get; set; } = null!;
+    public string? Username { get; set; }
 
-    public long? Aid { get; set; }
+    public string? Name { get; set; }
+
+    public long? Addressid { get; set; }
 
     public string? Phone { get; set; }
 
-    public string? Email { get; set; }
+    public string Email { get; set; } = null!;
 
     public int Orgunitid { get; set; }
 
@@ -21,17 +23,19 @@ public partial class Consumer
 
     public string Status { get; set; } = null!;
 
-    public DateTime Createdat { get; set; }
+    public DateTime Createdat { get; set; } = DateTime.UtcNow;
 
     public string Createdby { get; set; } = null!;
 
-    public DateTime? Updatedat { get; set; }
+    public DateTime? Updatedat { get; set; } = DateTime.UtcNow;
 
     public string? Updatedby { get; set; }
 
     public bool Deleted { get; set; }
 
-    public virtual Address? AidNavigation { get; set; }
+    public byte[] Passwordhash { get; set; } = null!;
+
+    public virtual Address? Address { get; set; }
 
     public virtual ICollection<Arrear> Arrears { get; set; } = new List<Arrear>();
 

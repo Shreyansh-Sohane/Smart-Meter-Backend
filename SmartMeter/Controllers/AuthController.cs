@@ -1,12 +1,4 @@
-﻿//namespace SmartMeter.Controllers
-//{
-//    public class AuthController
-//    {
-//    }
-//}
-
-
-using SmartMeter.Models;
+﻿using SmartMeter.Models;
 using SmartMeter.Models.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -52,17 +44,17 @@ namespace SmartMeter.Controllers
 
         }
 
-        [HttpPost("refresh-token")]
-        public async Task<ActionResult<TokenResponseDto>> RefreshToken(RefreshTokenRequestDto request)
-        {
-            var token = await service.RefreshTokenAsync(request);
-            if (token is null)
-            {
-                return BadRequest("Invalid/expired Token");
-            }
-            return Ok(token);
+        //[HttpPost("refresh-token")]
+        //public async Task<ActionResult<TokenResponseDto>> RefreshToken(RefreshTokenRequestDto request)
+        //{
+        //    var token = await service.RefreshTokenAsync(request);
+        //    if (token is null)
+        //    {
+        //        return BadRequest("Invalid/expired Token");
+        //    }
+        //    return Ok(token);
 
-        }
+        //}
 
         [HttpGet("Auth-end points")]
         [Authorize]

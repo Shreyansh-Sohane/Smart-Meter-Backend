@@ -42,17 +42,17 @@ public partial class SmartMeterDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=localhost;Port=5433;Database=smartmeterdb;Username=postgres;Password=Gopal@097");
+        => optionsBuilder.UseNpgsql("Host=localhost;Port=5433;Database=SmartMeterDatabase;Username=postgres;Password=Admin");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Address>(entity =>
         {
-            entity.HasKey(e => e.Aid).HasName("address_pkey");
+            entity.HasKey(e => e.Addressid).HasName("address_pkey");
 
             entity.ToTable("address");
 
-            entity.Property(e => e.Aid).HasColumnName("aid");
+            entity.Property(e => e.Addressid).HasColumnName("addressid");
             entity.Property(e => e.City)
                 .HasMaxLength(100)
                 .HasColumnName("city");
@@ -65,9 +65,9 @@ public partial class SmartMeterDbContext : DbContext
             entity.Property(e => e.Pincode)
                 .HasMaxLength(20)
                 .HasColumnName("pincode");
-            entity.Property(e => e.State)
+            entity.Property(e => e.States)
                 .HasMaxLength(100)
-                .HasColumnName("state");
+                .HasColumnName("states");
         });
 
         modelBuilder.Entity<Arrear>(entity =>
@@ -155,11 +155,13 @@ public partial class SmartMeterDbContext : DbContext
 
             entity.ToTable("consumer");
 
+            entity.HasIndex(e => e.Email, "consumer_email_key").IsUnique();
+
             entity.Property(e => e.Consumerid).HasColumnName("consumerid");
-            entity.Property(e => e.Aid).HasColumnName("aid");
+            entity.Property(e => e.Addressid).HasColumnName("addressid");
             entity.Property(e => e.Createdat)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnType("timestamp with time zone")
                 .HasColumnName("createdat");
             entity.Property(e => e.Createdby)
                 .HasMaxLength(100)
@@ -175,6 +177,9 @@ public partial class SmartMeterDbContext : DbContext
                 .HasMaxLength(200)
                 .HasColumnName("name");
             entity.Property(e => e.Orgunitid).HasColumnName("orgunitid");
+            entity.Property(e => e.Passwordhash)
+                .HasDefaultValueSql("'\\x3635366665626565'::bytea")
+                .HasColumnName("passwordhash");
             entity.Property(e => e.Phone)
                 .HasMaxLength(30)
                 .HasColumnName("phone");
@@ -184,15 +189,18 @@ public partial class SmartMeterDbContext : DbContext
                 .HasColumnName("status");
             entity.Property(e => e.Tariffid).HasColumnName("tariffid");
             entity.Property(e => e.Updatedat)
-                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnType("timestamp with time zone")
                 .HasColumnName("updatedat");
             entity.Property(e => e.Updatedby)
                 .HasMaxLength(100)
                 .HasColumnName("updatedby");
+            entity.Property(e => e.Username)
+                .HasMaxLength(100)
+                .HasColumnName("username");
 
-            entity.HasOne(d => d.AidNavigation).WithMany(p => p.Consumers)
-                .HasForeignKey(d => d.Aid)
-                .HasConstraintName("consumer_aid_fkey");
+            entity.HasOne(d => d.Address).WithMany(p => p.Consumers)
+                .HasForeignKey(d => d.Addressid)
+                .HasConstraintName("consumer_addressid_fkey");
 
             entity.HasOne(d => d.Orgunit).WithMany(p => p.Consumers)
                 .HasForeignKey(d => d.Orgunitid)
@@ -228,7 +236,7 @@ public partial class SmartMeterDbContext : DbContext
                 .HasMaxLength(30)
                 .HasColumnName("imsi");
             entity.Property(e => e.Installtsutc)
-                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnType("timestamp with time zone")
                 .HasColumnName("installtsutc");
             entity.Property(e => e.Ipaddress)
                 .HasMaxLength(45)
@@ -409,6 +417,8 @@ public partial class SmartMeterDbContext : DbContext
 
             entity.ToTable("User");
 
+            entity.HasIndex(e => e.Email, "User_email_key").IsUnique();
+
             entity.HasIndex(e => e.Username, "User_username_key").IsUnique();
 
             entity.Property(e => e.Userid).HasColumnName("userid");
@@ -422,12 +432,16 @@ public partial class SmartMeterDbContext : DbContext
                 .HasDefaultValue(true)
                 .HasColumnName("isactive");
             entity.Property(e => e.Lastloginutc)
-                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnType("timestamp with time zone")
                 .HasColumnName("lastloginutc");
             entity.Property(e => e.Passwordhash).HasColumnName("passwordhash");
             entity.Property(e => e.Phone)
                 .HasMaxLength(30)
                 .HasColumnName("phone");
+            entity.Property(e => e.Profilepic).HasColumnName("profilepic");
+            entity.Property(e => e.Roles)
+                .HasMaxLength(15)
+                .HasColumnName("roles");
             entity.Property(e => e.Username)
                 .HasMaxLength(100)
                 .HasColumnName("username");
